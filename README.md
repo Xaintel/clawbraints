@@ -1,6 +1,6 @@
-# ClawBrain Brain-Only
+# Clawbraints (TypeScript Migration)
 
-Repositorio nuevo, enfocado solo en el Brain de orquestacion tecnica.
+Repositorio nuevo, enfocado en el Brain de orquestacion tecnica y su migracion progresiva a TypeScript.
 
 ## Que es este Brain
 
@@ -17,6 +17,7 @@ Hace 4 cosas principales:
 - API FastAPI (`api/`)
 - Workers y runtime (`runner/`)
 - Politicas compartidas (`shared/`)
+- Runtime TypeScript inicial (`src/`, `package.json`, `tsconfig.json`)
 - Integracion IDE local (CLI + MCP): `ide_client/`, `scripts/clawbrain-ide`, `scripts/clawbrain-mcp-server`
 - Migraciones SQLite (`migrations/`)
 - Compose Brain-only (`docker-compose.yml`)
@@ -29,6 +30,25 @@ Hace 4 cosas principales:
 - Launcher de juegos
 - Flujo ROM/Jelly multimedia
 - UI de portal gamer
+
+## Estado de migracion a TypeScript
+
+- Ya existe un servidor TS funcional con endpoints clave:
+  - `/health`
+  - `/tasks`, `/tasks/{id}`, `/tasks/{id}/logs`
+  - `/repos/{repo}/memory` (GET/PUT)
+  - `/ide/*` y `/api/ide/*` (agentes, tasks, artifacts, diff)
+- Mantiene validacion de policy, auth por token, SQLite y cola Redis.
+- Python legacy sigue presente mientras se completa la migracion total.
+
+## Quickstart TypeScript
+
+```bash
+cd /srv/clawbrain/clawbraints
+npm install
+npm run build
+npm run dev
+```
 
 ## Arquitectura rapida
 
