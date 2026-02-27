@@ -1,0 +1,116 @@
+version: 1
+
+security:
+  runner_must_not_be_root: true
+  secrets_in_git_forbidden: true
+  audit_logs_required: true
+
+paths:
+  projects_root: /srv/projects
+  data_root: /data/clawbrain
+  allowed_write_roots:
+    - /srv/projects
+    - /data/clawbrain/logs
+    - /data/clawbrain/memory
+    - /data/clawbrain/artifacts
+  repo_root: /srv/clawbrain/clawbrain-brain
+  db_dir: /data/clawbrain/db
+  logs_dir: /data/clawbrain/logs
+  memory_dir: /data/clawbrain/memory
+  config_dir: /data/clawbrain/config
+  secrets_dir: /data/clawbrain/secrets
+  artifacts_dir: /data/clawbrain/artifacts
+
+repos_allowed:
+  - demo
+  - clawbrain-brain
+
+agents:
+  TranslatorAgent:
+    linux_user: codex
+    allow_sudo: false
+    commands_whitelist:
+      - 'python3 -c "print(123)"'
+      - git status
+      - git diff
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/demo -
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbrain-brain -
+  PMAgent:
+    linux_user: codex
+    allow_sudo: false
+    commands_whitelist:
+      - 'python3 -c "print(123)"'
+      - git status
+      - git diff
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/demo -
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbrain-brain -
+  MobileAgent:
+    linux_user: codex
+    allow_sudo: false
+    commands_whitelist:
+      - 'python3 -c "print(123)"'
+      - git status
+      - git diff
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/demo -
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbrain-brain -
+  OCRAgent:
+    linux_user: codex
+    allow_sudo: false
+    commands_whitelist:
+      - 'python3 -c "print(123)"'
+      - git status
+      - git diff
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/demo -
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbrain-brain -
+  QAAgent:
+    linux_user: builder
+    allow_sudo: false
+    commands_whitelist:
+      - 'python3 -c "print(123)"'
+      - git status
+      - git diff
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/demo -
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbrain-brain -
+  CoderAgent:
+    linux_user: codex
+    allow_sudo: false
+    commands_whitelist:
+      - 'python3 -c "print(123)"'
+      - git status
+      - git diff
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/demo -
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbrain-brain -
+  BuilderAgent:
+    linux_user: builder
+    allow_sudo: false
+    commands_whitelist:
+      - 'python3 -c "print(123)"'
+      - git status
+      - git diff
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/demo -
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbrain-brain -
+  UXAgent:
+    linux_user: builder
+    allow_sudo: false
+    commands_whitelist:
+      - 'python3 -c "print(123)"'
+      - git status
+      - git diff
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/demo -
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbrain-brain -
+  DeployerAgent:
+    linux_user: deployer
+    allow_sudo: true
+    commands_whitelist: []
+    sudo_commands_allowed:
+      - /usr/local/bin/claw_deploy_up
+      - /usr/local/bin/claw_deploy_down
+      - /usr/local/bin/claw_deploy_restart
+
+stacks_allowed: []
+
+deployer:
+  sudo_allowed_scripts:
+    - /usr/local/bin/claw_deploy_up
+    - /usr/local/bin/claw_deploy_down
+    - /usr/local/bin/claw_deploy_restart

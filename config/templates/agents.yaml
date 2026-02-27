@@ -1,0 +1,116 @@
+version: 1
+
+hierarchy:
+  - TranslatorAgent
+  - PMAgent
+  - MobileAgent
+  - OCRAgent
+  - UXAgent
+  - QAAgent
+  - BuilderAgent
+  - CoderAgent
+  - DeployerAgent
+
+agents:
+  TranslatorAgent:
+    linux_user: codex
+    sudo: false
+    role: prompt_translation
+    description: "Translates simple user language into structured PM-ready requirements and task briefs."
+    model: "gpt-5.3-codex"
+    skills:
+      - simple_language_parsing
+      - requirement_normalization
+      - pm_brief_translation
+      - task_intent_mapping
+  PMAgent:
+    linux_user: codex
+    sudo: false
+    role: project_manager
+    description: "Project-manager style agent that interviews the user, translates goals, and orchestrates tasks for execution agents."
+    model: "gpt-5.3-codex"
+    skills:
+      - requirements_interview
+      - task_decomposition
+      - prompt_translation
+      - agent_orchestration
+      - risk_tracking
+  MobileAgent:
+    linux_user: codex
+    sudo: false
+    role: mobile_react_native
+    description: "Specialist agent for React Native app architecture, navigation, state, and production-grade mobile flows."
+    model: "gpt-5.3-codex"
+    skills:
+      - react_native_architecture
+      - mobile_navigation_flows
+      - state_management_mobile
+      - device_capabilities_integration
+      - offline_sync_patterns
+  OCRAgent:
+    linux_user: codex
+    sudo: false
+    role: receipt_ocr
+    description: "Specialist agent for receipt OCR, line-item extraction, totals parsing, and confidence/error-handling flows."
+    model: "gpt-5.3-codex"
+    skills:
+      - image_preprocessing
+      - receipt_ocr_pipeline
+      - text_normalization
+      - line_item_extraction
+      - confidence_scoring
+  QAAgent:
+    linux_user: builder
+    sudo: false
+    role: qa_validation
+    description: "Quality assurance agent for mobile end-to-end validation, regression checks, and release quality gates."
+    model: "gpt-5.3-codex"
+    skills:
+      - test_plan_design
+      - e2e_mobile_testing
+      - regression_testing
+      - quality_gate_validation
+      - release_readiness_review
+  CoderAgent:
+    linux_user: codex
+    sudo: false
+    role: coding
+    description: "General coding agent for backend and integrations."
+    model: "gpt-5.3-codex"
+    skills:
+      - code_edit
+      - repo_maintenance
+  BuilderAgent:
+    linux_user: builder
+    sudo: false
+    role: build_test
+    description: "Build and verification agent for runtime stability."
+    model: "gpt-5.3-codex"
+    skills:
+      - build
+      - functional_checks
+  UXAgent:
+    linux_user: builder
+    sudo: false
+    role: ux_frontend
+    description: "UX/UI + design specialist agent for frontend navigation, visual design system, layout, and usability fixes."
+    model: "gpt-5.3-codex"
+    skills:
+      - ux-frontend-expert
+      - frontend_design
+      - visual_design_system
+      - interaction_design
+      - ui_functional_testing
+  DeployerAgent:
+    linux_user: deployer
+    sudo: true
+    role: deploy
+    description: "Controlled deployment agent with audited sudo scripts."
+    model: "gpt-5.3-codex"
+    skills:
+      - deploy
+      - rollback
+    sudo_allowed_scripts:
+      - /usr/local/bin/claw_deploy_up
+      - /usr/local/bin/claw_deploy_down
+      - /usr/local/bin/claw_deploy_restart

@@ -1,0 +1,170 @@
+services:
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    restart: unless-stopped
+
+  clawbrain-api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    command: ["uvicorn", "api.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    depends_on:
+      - redis
+    ports:
+      - ${CLAWBRAIN_API_BIND:-127.0.0.1:8088}:8000
+    environment:
+      CLAWBRAIN_CONFIG_DIR: /data/clawbrain/config
+      CLAWBRAIN_DB_PATH: /data/clawbrain/db/clawbrain.sqlite3
+      CLAWBRAIN_LOGS_DIR: /data/clawbrain/logs
+      CLAWBRAIN_MEMORY_DIR: /data/clawbrain/memory
+      CLAWBRAIN_API_TOKEN_FILE: /data/clawbrain/secrets/api_token
+      CLAWBRAIN_REDIS_URL: redis://redis:6379/0
+      CLAWBRAIN_QUEUE_NAME: clawbrain:tasks
+      CLAWBRAIN_AGENT_STATUS_REDIS_KEY: clawbrain:agent_status:latest
+    volumes:
+      - ${CLAWBRAIN_DATA_ROOT:-/data/clawbrain}:/data/clawbrain
+    restart: unless-stopped
+
+  runner-coder:
+    image: clawbrain-runner:local
+    build:
+      context: .
+      dockerfile: runner/Dockerfile
+    command: ["python", "-m", "runner.worker", "--agent", "CoderAgent"]
+    user: "1001:1001"
+    depends_on:
+      - redis
+    environment:
+      CLAWBRAIN_CONFIG_DIR: /data/clawbrain/config
+      CLAWBRAIN_DB_PATH: /data/clawbrain/db/clawbrain.sqlite3
+      CLAWBRAIN_LOGS_DIR: /data/clawbrain/logs
+      CLAWBRAIN_MEMORY_DIR: /data/clawbrain/memory
+      CLAWBRAIN_ARTIFACTS_DIR: /data/clawbrain/artifacts
+      CLAWBRAIN_REDIS_URL: redis://redis:6379/0
+      CLAWBRAIN_QUEUE_NAME: clawbrain:tasks
+    volumes:
+      - ${CLAWBRAIN_PROJECTS_ROOT:-/srv/projects}:/srv/projects
+      - ${CLAWBRAIN_DATA_ROOT:-/data/clawbrain}:/data/clawbrain
+    restart: unless-stopped
+
+  runner-builder:
+    image: clawbrain-runner:local
+    command: ["python", "-m", "runner.worker", "--agent", "BuilderAgent"]
+    user: "1002:1002"
+    depends_on:
+      - redis
+    environment:
+      CLAWBRAIN_CONFIG_DIR: /data/clawbrain/config
+      CLAWBRAIN_DB_PATH: /data/clawbrain/db/clawbrain.sqlite3
+      CLAWBRAIN_LOGS_DIR: /data/clawbrain/logs
+      CLAWBRAIN_MEMORY_DIR: /data/clawbrain/memory
+      CLAWBRAIN_ARTIFACTS_DIR: /data/clawbrain/artifacts
+      CLAWBRAIN_REDIS_URL: redis://redis:6379/0
+      CLAWBRAIN_QUEUE_NAME: clawbrain:tasks
+    volumes:
+      - ${CLAWBRAIN_PROJECTS_ROOT:-/srv/projects}:/srv/projects
+      - ${CLAWBRAIN_DATA_ROOT:-/data/clawbrain}:/data/clawbrain
+    restart: unless-stopped
+
+  runner-ux:
+    image: clawbrain-runner:local
+    command: ["python", "-m", "runner.worker", "--agent", "UXAgent"]
+    user: "1002:1002"
+    depends_on:
+      - redis
+    environment:
+      CLAWBRAIN_CONFIG_DIR: /data/clawbrain/config
+      CLAWBRAIN_DB_PATH: /data/clawbrain/db/clawbrain.sqlite3
+      CLAWBRAIN_LOGS_DIR: /data/clawbrain/logs
+      CLAWBRAIN_MEMORY_DIR: /data/clawbrain/memory
+      CLAWBRAIN_ARTIFACTS_DIR: /data/clawbrain/artifacts
+      CLAWBRAIN_REDIS_URL: redis://redis:6379/0
+      CLAWBRAIN_QUEUE_NAME: clawbrain:tasks
+    volumes:
+      - ${CLAWBRAIN_PROJECTS_ROOT:-/srv/projects}:/srv/projects
+      - ${CLAWBRAIN_DATA_ROOT:-/data/clawbrain}:/data/clawbrain
+    restart: unless-stopped
+
+  runner-mobile:
+    image: clawbrain-runner:local
+    command: ["python", "-m", "runner.worker", "--agent", "MobileAgent"]
+    user: "1001:1001"
+    depends_on:
+      - redis
+    environment:
+      CLAWBRAIN_CONFIG_DIR: /data/clawbrain/config
+      CLAWBRAIN_DB_PATH: /data/clawbrain/db/clawbrain.sqlite3
+      CLAWBRAIN_LOGS_DIR: /data/clawbrain/logs
+      CLAWBRAIN_MEMORY_DIR: /data/clawbrain/memory
+      CLAWBRAIN_ARTIFACTS_DIR: /data/clawbrain/artifacts
+      CLAWBRAIN_REDIS_URL: redis://redis:6379/0
+      CLAWBRAIN_QUEUE_NAME: clawbrain:tasks
+    volumes:
+      - ${CLAWBRAIN_PROJECTS_ROOT:-/srv/projects}:/srv/projects
+      - ${CLAWBRAIN_DATA_ROOT:-/data/clawbrain}:/data/clawbrain
+    restart: unless-stopped
+
+  runner-ocr:
+    image: clawbrain-runner:local
+    command: ["python", "-m", "runner.worker", "--agent", "OCRAgent"]
+    user: "1001:1001"
+    depends_on:
+      - redis
+    environment:
+      CLAWBRAIN_CONFIG_DIR: /data/clawbrain/config
+      CLAWBRAIN_DB_PATH: /data/clawbrain/db/clawbrain.sqlite3
+      CLAWBRAIN_LOGS_DIR: /data/clawbrain/logs
+      CLAWBRAIN_MEMORY_DIR: /data/clawbrain/memory
+      CLAWBRAIN_ARTIFACTS_DIR: /data/clawbrain/artifacts
+      CLAWBRAIN_REDIS_URL: redis://redis:6379/0
+      CLAWBRAIN_QUEUE_NAME: clawbrain:tasks
+    volumes:
+      - ${CLAWBRAIN_PROJECTS_ROOT:-/srv/projects}:/srv/projects
+      - ${CLAWBRAIN_DATA_ROOT:-/data/clawbrain}:/data/clawbrain
+    restart: unless-stopped
+
+  runner-qa:
+    image: clawbrain-runner:local
+    command: ["python", "-m", "runner.worker", "--agent", "QAAgent"]
+    user: "1002:1002"
+    depends_on:
+      - redis
+    environment:
+      CLAWBRAIN_CONFIG_DIR: /data/clawbrain/config
+      CLAWBRAIN_DB_PATH: /data/clawbrain/db/clawbrain.sqlite3
+      CLAWBRAIN_LOGS_DIR: /data/clawbrain/logs
+      CLAWBRAIN_MEMORY_DIR: /data/clawbrain/memory
+      CLAWBRAIN_ARTIFACTS_DIR: /data/clawbrain/artifacts
+      CLAWBRAIN_REDIS_URL: redis://redis:6379/0
+      CLAWBRAIN_QUEUE_NAME: clawbrain:tasks
+    volumes:
+      - ${CLAWBRAIN_PROJECTS_ROOT:-/srv/projects}:/srv/projects
+      - ${CLAWBRAIN_DATA_ROOT:-/data/clawbrain}:/data/clawbrain
+    restart: unless-stopped
+
+  agent-maintainer:
+    image: clawbrain-runner:local
+    command: ["python", "-m", "runner.maintainer"]
+    user: "1001:1001"
+    depends_on:
+      - redis
+      - runner-coder
+      - runner-builder
+      - runner-ux
+      - runner-mobile
+      - runner-ocr
+      - runner-qa
+    environment:
+      CLAWBRAIN_CONFIG_DIR: /data/clawbrain/config
+      CLAWBRAIN_LOGS_DIR: /data/clawbrain/logs
+      CLAWBRAIN_REDIS_URL: redis://redis:6379/0
+      CLAWBRAIN_QUEUE_NAME: clawbrain:tasks
+      CLAWBRAIN_HEARTBEAT_STALE_SEC: "90"
+      CLAWBRAIN_MAINTAINER_INTERVAL_SEC: "15"
+      CLAWBRAIN_MAINTAINER_REQUIRED_AGENTS: CoderAgent,BuilderAgent,UXAgent,MobileAgent,OCRAgent,QAAgent
+      CLAWBRAIN_AGENT_STATUS_REDIS_KEY: clawbrain:agent_status:latest
+      CLAWBRAIN_AGENT_STATUS_FILE: /tmp/agent_maintainer_status.json
+    volumes:
+      - ${CLAWBRAIN_DATA_ROOT:-/data/clawbrain}:/data/clawbrain
+    restart: unless-stopped

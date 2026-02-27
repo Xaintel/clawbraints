@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+ENV_FILE="${CLAWBRAIN_MCP_ENV_FILE:-$ROOT_DIR/.env.mcp}"
+if [[ -f "$ENV_FILE" ]]; then
+  # shellcheck disable=SC1090
+  source "$ENV_FILE"
+fi
+
+SERVER_URL="${CLAWBRAIN_IDE_SERVER_URL:-http://127.0.0.1:8088}"
+TOKEN="${CLAWBRAIN_IDE_TOKEN:-}"
+TOKEN_FILE="${CLAWBRAIN_IDE_TOKEN_FILE:-/data/clawbrain/secrets/api_token}"
+
+if [[ -z "$TOKEN" && -f "$TOKEN_FILE" ]]; then
+  TOKEN="$(tr -d '\r\n' < "$TOKEN_FILE")"
+fi
+
+if [[ -z "$TOKEN" ]]; then
+  echo "[clawbrain-mcp] missing token. Set CLAWBRAIN_IDE_TOKEN or CLAWBRAIN_IDE_TOKEN_FILE." >&2
+  exit 1
+fi
+
+export CLAWBRAIN_IDE_SERVER_URL="$SERVER_URL"
+export CLAWBRAIN_IDE_TOKEN="$TOKEN"
+
+cd "$ROOT_DIR"
+exec python3 -m ide_client.mcp_server "$@"

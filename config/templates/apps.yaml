@@ -1,0 +1,10 @@
+version: 1
+
+apps:
+  - name: ClawBrain API
+    url: /health
+    description: Health endpoint for Brain API
+
+  - name: ClawBrain IDE
+    url: /api/ide/agents
+    description: IDE integration endpoint (requires token)

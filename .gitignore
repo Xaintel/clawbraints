@@ -1,0 +1,39 @@
+# Secrets / env
+.env
+.env.*
+!.env.example
+!.env.mcp.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# Node / UI
+node_modules/
+dist/
+build/
+.cache/
+
+# Local tooling
+.DS_Store
+.idea/
+.vscode/
+.local/
+
+# Accidental recursive IDE client copies
+ide_client/ide_client/
+
+# Runtime artifacts (NO en git)
+*.log
+artifacts/
+
+# Local data roots
+data/
+/data/
+/data/clawbrain/secrets/*
