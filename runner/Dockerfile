@@ -1,12 +1,20 @@
-FROM python:3.10-slim
+FROM node:20-slim
 
 WORKDIR /srv/clawbrain
 
-COPY runner/requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends ca-certificates git ripgrep; \
+    rm -rf /var/lib/apt/lists/*
 
-COPY runner /srv/clawbrain/runner
-COPY shared /srv/clawbrain/shared
+COPY package.json package-lock.json tsconfig.json ./
+COPY src ./src
+COPY migrations ./migrations
+RUN npm ci && npm run build && npm prune --omit=dev
+
+COPY config ./config
+COPY scripts ./scripts
+COPY skills ./skills
 
 # Ensure policy linux_user lookups resolve in-container for worker identity checks.
 RUN set -eux; \
@@ -17,7 +25,6 @@ RUN set -eux; \
     if ! getent group deployer >/dev/null; then groupadd -g 1003 deployer; fi; \
     if ! id -u deployer >/dev/null 2>&1; then useradd -m -u 1003 -g 1003 deployer; fi
 
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONPATH=/srv/clawbrain
+ENV NODE_ENV=production
 
-CMD ["python", "-m", "runner.worker", "--agent", "CoderAgent"]
+CMD ["node", "dist/runner/worker.js", "--agent", "CoderAgent"]

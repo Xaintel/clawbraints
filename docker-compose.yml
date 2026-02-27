@@ -8,7 +8,7 @@ services:
     build:
       context: .
       dockerfile: api/Dockerfile
-    command: ["uvicorn", "api.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    command: ["node", "dist/server.js"]
     depends_on:
       - redis
     ports:
@@ -22,6 +22,7 @@ services:
       CLAWBRAIN_REDIS_URL: redis://redis:6379/0
       CLAWBRAIN_QUEUE_NAME: clawbrain:tasks
       CLAWBRAIN_AGENT_STATUS_REDIS_KEY: clawbrain:agent_status:latest
+      CLAWBRAIN_API_PORT: "8000"
     volumes:
       - ${CLAWBRAIN_DATA_ROOT:-/data/clawbrain}:/data/clawbrain
     restart: unless-stopped
@@ -31,7 +32,7 @@ services:
     build:
       context: .
       dockerfile: runner/Dockerfile
-    command: ["python", "-m", "runner.worker", "--agent", "CoderAgent"]
+    command: ["node", "dist/runner/worker.js", "--agent", "CoderAgent"]
     user: "1001:1001"
     depends_on:
       - redis
@@ -50,7 +51,7 @@ services:
 
   runner-builder:
     image: clawbrain-runner:local
-    command: ["python", "-m", "runner.worker", "--agent", "BuilderAgent"]
+    command: ["node", "dist/runner/worker.js", "--agent", "BuilderAgent"]
     user: "1002:1002"
     depends_on:
       - redis
@@ -69,7 +70,7 @@ services:
 
   runner-ux:
     image: clawbrain-runner:local
-    command: ["python", "-m", "runner.worker", "--agent", "UXAgent"]
+    command: ["node", "dist/runner/worker.js", "--agent", "UXAgent"]
     user: "1002:1002"
     depends_on:
       - redis
@@ -88,7 +89,7 @@ services:
 
   runner-mobile:
     image: clawbrain-runner:local
-    command: ["python", "-m", "runner.worker", "--agent", "MobileAgent"]
+    command: ["node", "dist/runner/worker.js", "--agent", "MobileAgent"]
     user: "1001:1001"
     depends_on:
       - redis
@@ -107,7 +108,7 @@ services:
 
   runner-ocr:
     image: clawbrain-runner:local
-    command: ["python", "-m", "runner.worker", "--agent", "OCRAgent"]
+    command: ["node", "dist/runner/worker.js", "--agent", "OCRAgent"]
     user: "1001:1001"
     depends_on:
       - redis
@@ -126,7 +127,7 @@ services:
 
   runner-qa:
     image: clawbrain-runner:local
-    command: ["python", "-m", "runner.worker", "--agent", "QAAgent"]
+    command: ["node", "dist/runner/worker.js", "--agent", "QAAgent"]
     user: "1002:1002"
     depends_on:
       - redis
@@ -145,7 +146,7 @@ services:
 
   agent-maintainer:
     image: clawbrain-runner:local
-    command: ["python", "-m", "runner.maintainer"]
+    command: ["node", "dist/runner/maintainer.js"]
     user: "1001:1001"
     depends_on:
       - redis

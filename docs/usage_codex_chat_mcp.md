@@ -7,7 +7,7 @@ Si, esta implementado y usable por MCP stdio.
 Componentes:
 - Server MCP simple: `scripts/clawbrain-mcp-server`
 - Server MCP auto-configurable: `scripts/clawbrain-mcp-server-auto`
-- Implementacion MCP: `ide_client/mcp_server.py`
+- Implementacion MCP: `src/ide_client/mcp_server.ts`
 - Tools expuestas:
   - `clawbrain.create_task`
   - `clawbrain.get_task`
@@ -23,12 +23,12 @@ Componentes:
 
 Archivo recomendado:
 
-- `/srv/clawbrain/clawbrain-brain/.env.mcp`
+- `/srv/clawbrain/clawbraints/.env.mcp`
 
 Crearlo desde template:
 
 ```bash
-cd /srv/clawbrain/clawbrain-brain
+cd /srv/clawbrain/clawbraints
 cp .env.mcp.example .env.mcp
 ```
 
@@ -43,7 +43,7 @@ Modo local (`scripts/local_up.sh`):
 
 ```bash
 CLAWBRAIN_IDE_SERVER_URL=http://127.0.0.1:18088
-CLAWBRAIN_IDE_TOKEN_FILE=/srv/clawbrain/clawbrain-brain/.local/data/secrets/api_token
+CLAWBRAIN_IDE_TOKEN_FILE=/srv/clawbrain/clawbraints/.local/data/secrets/api_token
 ```
 
 ### 2) Comando MCP a usar en tu IDE
@@ -51,7 +51,7 @@ CLAWBRAIN_IDE_TOKEN_FILE=/srv/clawbrain/clawbrain-brain/.local/data/secrets/api_
 Usa este comando en tu configuracion MCP del cliente:
 
 ```text
-/srv/clawbrain/clawbrain-brain/scripts/clawbrain-mcp-server-auto
+/srv/clawbrain/clawbraints/scripts/clawbrain-mcp-server-auto
 ```
 
 Con esto no necesitas hardcodear token en el JSON del IDE.
@@ -64,7 +64,7 @@ Snippet generico para clientes compatibles:
 {
   "mcpServers": {
     "clawbrain": {
-      "command": "/srv/clawbrain/clawbrain-brain/scripts/clawbrain-mcp-server-auto"
+      "command": "/srv/clawbrain/clawbraints/scripts/clawbrain-mcp-server-auto"
     }
   }
 }
@@ -76,7 +76,7 @@ Si prefieres modo explicito (sin `.env.mcp`):
 {
   "mcpServers": {
     "clawbrain": {
-      "command": "/srv/clawbrain/clawbrain-brain/scripts/clawbrain-mcp-server",
+      "command": "/srv/clawbrain/clawbraints/scripts/clawbrain-mcp-server",
       "env": {
         "CLAWBRAIN_IDE_SERVER_URL": "http://127.0.0.1:8088",
         "CLAWBRAIN_IDE_TOKEN": "<token>"
@@ -105,7 +105,7 @@ Crea una tarea en ClawBrain:
 - type: command
 - repo: demo
 - agent: BuilderAgent
-- command: python3 -c "print(123)"
+- command: node -e "console.log(123)"
 - request_text: smoke desde chat
 Luego consulta el estado hasta que termine.
 ```
@@ -150,18 +150,18 @@ curl -fsS -H "X-Clawbrain-Token: $TOKEN" http://127.0.0.1:8088/api/ide/agents
 
 3. Verifica archivo editado:
 
-- `/srv/clawbrain/clawbrain-brain/.env.mcp`
+- `/srv/clawbrain/clawbraints/.env.mcp`
 
 4. Verifica que el comando MCP exista:
 
 ```bash
-ls -l /srv/clawbrain/clawbrain-brain/scripts/clawbrain-mcp-server-auto
+ls -l /srv/clawbrain/clawbraints/scripts/clawbrain-mcp-server-auto
 ```
 
 5. Prueba arranque manual del server MCP:
 
 ```bash
-cd /srv/clawbrain/clawbrain-brain
+cd /srv/clawbrain/clawbraints
 ./scripts/clawbrain-mcp-server-auto
 ```
 
@@ -172,7 +172,7 @@ cd /srv/clawbrain/clawbrain-brain
 Para descartar problema del cliente IDE:
 
 ```bash
-cd /srv/clawbrain/clawbrain-brain
+cd /srv/clawbrain/clawbraints
 export CLAWBRAIN_IDE_SERVER_URL=http://127.0.0.1:8088
 export CLAWBRAIN_IDE_TOKEN="$(cat /data/clawbrain/secrets/api_token)"
 ./scripts/clawbrain-ide agents

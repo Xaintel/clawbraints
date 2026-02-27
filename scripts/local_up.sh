@@ -67,7 +67,16 @@ cleanup() {
 }
 trap cleanup EXIT
 
-python3 "$ROOT_DIR/scripts/configure_local_policy.py" \
+if [[ ! -d "$ROOT_DIR/node_modules" ]]; then
+  echo "[local-up] installing npm dependencies"
+  (cd "$ROOT_DIR" && npm install >/dev/null)
+fi
+if [[ ! -f "$ROOT_DIR/dist/scripts/configure_local_policy.js" ]]; then
+  echo "[local-up] building TypeScript runtime"
+  (cd "$ROOT_DIR" && npm run build >/dev/null)
+fi
+
+node "$ROOT_DIR/dist/scripts/configure_local_policy.js" \
   --policy-file "$CLAWBRAIN_LOCAL_DATA_ROOT/config/policy.yaml" \
   --repos "$effective_repos" \
   --projects-root /srv/projects >"$policy_report"

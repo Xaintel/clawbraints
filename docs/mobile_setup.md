@@ -8,7 +8,7 @@ Instala dependencias base:
 
 ```bash
 sudo apt-get update
-sudo apt-get install -y docker.io docker-compose-v2 git python3 curl ca-certificates gnupg
+sudo apt-get install -y docker.io docker-compose-v2 git nodejs npm curl ca-certificates gnupg
 ```
 
 Arranca Docker y habilita permisos:
@@ -107,7 +107,7 @@ Smoke task remoto:
   --type command \
   --repo demo \
   --agent BuilderAgent \
-  --command 'python3 -c "print(123)"' \
+  --command 'node -e "console.log(123)"' \
   --request-text 'smoke remoto'
 ```
 

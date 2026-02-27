@@ -35,10 +35,7 @@ if [[ ! -f "$TOKEN_FILE" ]]; then
   if command -v openssl >/dev/null 2>&1; then
     openssl rand -hex 32 >"$TOKEN_FILE"
   else
-    python3 - <<'PY' >"$TOKEN_FILE"
-import secrets
-print(secrets.token_hex(32))
-PY
+    node -e 'const c=require("node:crypto");process.stdout.write(c.randomBytes(32).toString("hex") + "\\n");' >"$TOKEN_FILE"
   fi
   chmod 600 "$TOKEN_FILE"
   echo "[local-bootstrap] created token: $TOKEN_FILE"
@@ -50,8 +47,17 @@ fi
 echo "[local-bootstrap] installing config templates"
 CLAWBRAIN_CONFIG_DIR="$CONFIG_DIR" "$ROOT_DIR/scripts/install_config_templates.sh"
 
+if [[ ! -d "$ROOT_DIR/node_modules" ]]; then
+  echo "[local-bootstrap] installing npm dependencies"
+  (cd "$ROOT_DIR" && npm install >/dev/null)
+fi
+if [[ ! -f "$ROOT_DIR/dist/scripts/migrate.js" ]]; then
+  echo "[local-bootstrap] building TypeScript runtime"
+  (cd "$ROOT_DIR" && npm run build >/dev/null)
+fi
+
 echo "[local-bootstrap] applying migrations"
-python3 "$ROOT_DIR/scripts/migrate.py" --db-path "$DB_PATH"
+node "$ROOT_DIR/dist/scripts/migrate.js" --db-path "$DB_PATH"
 chmod 666 "$DB_PATH"
 
 if [[ ! -f "$DEMO_REPO/README.md" ]]; then

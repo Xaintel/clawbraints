@@ -12,7 +12,7 @@ Modo local para correr el Brain sin tocar `/data/clawbrain` ni `/srv/projects` d
 ## Levantar
 
 ```bash
-cd /srv/clawbrain/clawbrain-brain
+cd /srv/clawbrain/clawbraints
 ./scripts/local_up.sh
 ```
 
@@ -71,12 +71,12 @@ Para flujo completo en rama `mobile` (WSL + cliente remoto de pega + MCP), ver:
 Para `scripts/clawbrain-mcp-server-auto`, usa:
 
 ```bash
-export CLAWBRAIN_MCP_ENV_FILE=/srv/clawbrain/clawbrain-brain/.env.mcp.local
+export CLAWBRAIN_MCP_ENV_FILE=/srv/clawbrain/clawbraints/.env.mcp.local
 ```
 
 Contenido sugerido de `.env.mcp.local`:
 
 ```bash
 CLAWBRAIN_IDE_SERVER_URL=http://127.0.0.1:18088
-CLAWBRAIN_IDE_TOKEN_FILE=/srv/clawbrain/clawbrain-brain/.local/data/secrets/api_token
+CLAWBRAIN_IDE_TOKEN_FILE=/srv/clawbrain/clawbraints/.local/data/secrets/api_token
 ```

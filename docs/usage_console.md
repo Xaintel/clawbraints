@@ -13,7 +13,7 @@ Modo local (`scripts/local_up.sh`):
 
 ```bash
 export CLAWBRAIN_IDE_SERVER_URL="http://127.0.0.1:18088"
-export CLAWBRAIN_IDE_TOKEN="$(cat /srv/clawbrain/clawbrain-brain/.local/data/secrets/api_token)"
+export CLAWBRAIN_IDE_TOKEN="$(cat /srv/clawbrain/clawbraints/.local/data/secrets/api_token)"
 ```
 
 O guardar config local:
@@ -38,7 +38,7 @@ scripts/clawbrain-ide create-task \
   --type command \
   --repo demo \
   --agent BuilderAgent \
-  --command 'python -c "print(123)"' \
+  --command 'node -e "console.log(123)"' \
   --request-text 'smoke check'
 ```
 

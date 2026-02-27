@@ -13,7 +13,7 @@ paths:
     - /data/clawbrain/logs
     - /data/clawbrain/memory
     - /data/clawbrain/artifacts
-  repo_root: /srv/clawbrain/clawbrain-brain
+  repo_root: /srv/clawbrain/clawbraints
   db_dir: /data/clawbrain/db
   logs_dir: /data/clawbrain/logs
   memory_dir: /data/clawbrain/memory
@@ -23,81 +23,81 @@ paths:
 
 repos_allowed:
   - demo
-  - clawbrain-brain
+  - clawbraints
 
 agents:
   TranslatorAgent:
     linux_user: codex
     allow_sudo: false
     commands_whitelist:
-      - 'python3 -c "print(123)"'
+      - 'node -e "console.log(123)"'
       - git status
       - git diff
       - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/demo -
-      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbrain-brain -
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbraints -
   PMAgent:
     linux_user: codex
     allow_sudo: false
     commands_whitelist:
-      - 'python3 -c "print(123)"'
+      - 'node -e "console.log(123)"'
       - git status
       - git diff
       - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/demo -
-      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbrain-brain -
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbraints -
   MobileAgent:
     linux_user: codex
     allow_sudo: false
     commands_whitelist:
-      - 'python3 -c "print(123)"'
+      - 'node -e "console.log(123)"'
       - git status
       - git diff
       - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/demo -
-      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbrain-brain -
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbraints -
   OCRAgent:
     linux_user: codex
     allow_sudo: false
     commands_whitelist:
-      - 'python3 -c "print(123)"'
+      - 'node -e "console.log(123)"'
       - git status
       - git diff
       - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/demo -
-      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbrain-brain -
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbraints -
   QAAgent:
     linux_user: builder
     allow_sudo: false
     commands_whitelist:
-      - 'python3 -c "print(123)"'
+      - 'node -e "console.log(123)"'
       - git status
       - git diff
       - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/demo -
-      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbrain-brain -
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbraints -
   CoderAgent:
     linux_user: codex
     allow_sudo: false
     commands_whitelist:
-      - 'python3 -c "print(123)"'
+      - 'node -e "console.log(123)"'
       - git status
       - git diff
       - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/demo -
-      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbrain-brain -
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbraints -
   BuilderAgent:
     linux_user: builder
     allow_sudo: false
     commands_whitelist:
-      - 'python3 -c "print(123)"'
+      - 'node -e "console.log(123)"'
       - git status
       - git diff
       - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/demo -
-      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbrain-brain -
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbraints -
   UXAgent:
     linux_user: builder
     allow_sudo: false
     commands_whitelist:
-      - 'python3 -c "print(123)"'
+      - 'node -e "console.log(123)"'
       - git status
       - git diff
       - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/demo -
-      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbrain-brain -
+      - codex exec --skip-git-repo-check --sandbox workspace-write -C /srv/projects/clawbraints -
   DeployerAgent:
     linux_user: deployer
     allow_sudo: true

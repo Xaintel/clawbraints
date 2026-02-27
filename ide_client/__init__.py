@@ -1,1 +1,0 @@
-"""ClawBrain IDE client tooling."""

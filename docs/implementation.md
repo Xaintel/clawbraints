@@ -13,8 +13,8 @@
 
 ```bash
 cd /srv
-git clone <URL_REPO_BRAIN> clawbrain-brain
-cd /srv/clawbrain-brain
+git clone <URL_REPO_BRAIN> clawbraints
+cd /srv/clawbraints
 ```
 
 ### 2) Crear estructura persistente
@@ -42,7 +42,7 @@ sudo chmod 600 /data/clawbrain/secrets/api_token
 ### 5) Migrar DB
 
 ```bash
-python3 scripts/migrate.py --db-path /data/clawbrain/db/clawbrain.sqlite3
+./scripts/migrate --db-path /data/clawbrain/db/clawbrain.sqlite3
 ```
 
 ### 6) Levantar stack

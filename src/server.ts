@@ -25,6 +25,13 @@ async function bootstrap(): Promise<void> {
 
   const app = Fastify({ logger: true });
   registerTaskRoutes(app, context);
+  app.register(
+    (instance, _opts, done) => {
+      registerTaskRoutes(instance, context);
+      done();
+    },
+    { prefix: "/api" },
+  );
 
   app.register(
     (instance, _opts, done) => {

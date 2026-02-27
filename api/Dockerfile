@@ -1,18 +1,20 @@
-FROM python:3.10-slim
+FROM node:20-slim
 
 WORKDIR /srv/clawbrain
 
-COPY api/requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
+COPY package.json package-lock.json tsconfig.json ./
+COPY src ./src
+COPY migrations ./migrations
+RUN npm ci && npm run build && npm prune --omit=dev
 
-COPY api /srv/clawbrain/api
-COPY runner /srv/clawbrain/runner
-COPY shared /srv/clawbrain/shared
-COPY scripts /srv/clawbrain/scripts
+COPY config ./config
+COPY scripts ./scripts
+COPY skills ./skills
 
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONPATH=/srv/clawbrain
+ENV NODE_ENV=production
+ENV CLAWBRAIN_API_HOST=0.0.0.0
+ENV CLAWBRAIN_API_PORT=8000
 
 EXPOSE 8000
 
-CMD ["uvicorn", "api.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["node", "dist/server.js"]

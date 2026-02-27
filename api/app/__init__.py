@@ -1,2 +1,0 @@
-"""ClawBrain FastAPI application package."""
-

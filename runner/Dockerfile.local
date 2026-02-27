@@ -1,25 +1,22 @@
-FROM python:3.10-slim
+FROM node:20-slim
 
 WORKDIR /srv/clawbrain
 
-COPY runner/requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
-
-# Local dev image installs Node.js + Codex CLI so type=codex tasks can run in-container.
+# Local dev image installs Codex CLI so type=codex tasks can run in-container.
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends ca-certificates curl gnupg git ripgrep; \
-    mkdir -p /etc/apt/keyrings; \
-    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg; \
-    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" > /etc/apt/sources.list.d/nodesource.list; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends nodejs; \
     npm install -g @openai/codex; \
-    apt-get purge -y --auto-remove curl gnupg; \
     rm -rf /var/lib/apt/lists/*
 
-COPY runner /srv/clawbrain/runner
-COPY shared /srv/clawbrain/shared
+COPY package.json package-lock.json tsconfig.json ./
+COPY src ./src
+COPY migrations ./migrations
+RUN npm ci && npm run build && npm prune --omit=dev
+
+COPY config ./config
+COPY scripts ./scripts
+COPY skills ./skills
 
 # Ensure policy linux_user lookups resolve in-container for worker identity checks.
 RUN set -eux; \
@@ -30,7 +27,6 @@ RUN set -eux; \
     if ! getent group deployer >/dev/null; then groupadd -g 1003 deployer; fi; \
     if ! id -u deployer >/dev/null 2>&1; then useradd -m -u 1003 -g 1003 deployer; fi
 
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONPATH=/srv/clawbrain
+ENV NODE_ENV=production
 
-CMD ["python", "-m", "runner.worker", "--agent", "CoderAgent"]
+CMD ["node", "dist/runner/worker.js", "--agent", "CoderAgent"]

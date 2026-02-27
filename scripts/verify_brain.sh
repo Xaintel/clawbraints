@@ -16,15 +16,7 @@ cat /tmp/clawbrain_brain_health.json
 
 echo "[verify] ide agents"
 curl -fsS -H "X-Clawbrain-Token: $TOKEN" "$BASE_URL/api/ide/agents" >/tmp/clawbrain_brain_agents.json
-python3 - <<'PY'
-import json
-from pathlib import Path
-payload = json.loads(Path('/tmp/clawbrain_brain_agents.json').read_text(encoding='utf-8'))
-agents = payload.get('agents')
-if not isinstance(agents, list) or not agents:
-    raise SystemExit('[FAIL] invalid agents payload')
-print(f"[verify] agents_count={len(agents)}")
-PY
+node -e 'const fs=require("node:fs");const p=JSON.parse(fs.readFileSync("/tmp/clawbrain_brain_agents.json","utf8"));if(!Array.isArray(p.agents)||p.agents.length===0){console.error("[FAIL] invalid agents payload");process.exit(1);}console.log(`[verify] agents_count=${p.agents.length}`);'
 
 echo "[verify] create command task"
 cat > /tmp/clawbrain_brain_task.json <<'JSON'
@@ -32,7 +24,7 @@ cat > /tmp/clawbrain_brain_task.json <<'JSON'
   "type": "command",
   "repo": "demo",
   "agent": "BuilderAgent",
-  "command": "python3 -c \"print(123)\"",
+  "command": "node -e \"console.log(123)\"",
   "request_text": "brain verify"
 }
 JSON
@@ -43,28 +35,13 @@ curl -fsS -X POST \
   --data @/tmp/clawbrain_brain_task.json \
   "$BASE_URL/api/ide/tasks" >/tmp/clawbrain_brain_task_create.json
 
-TASK_ID="$(python3 - <<'PY'
-import json
-from pathlib import Path
-payload = json.loads(Path('/tmp/clawbrain_brain_task_create.json').read_text(encoding='utf-8'))
-value = payload.get('task_id')
-if not value:
-    raise SystemExit('missing task_id')
-print(value)
-PY
-)"
+TASK_ID="$(node -e 'const fs=require("node:fs");const p=JSON.parse(fs.readFileSync("/tmp/clawbrain_brain_task_create.json","utf8"));if(!p.task_id){console.error("missing task_id");process.exit(1);}process.stdout.write(String(p.task_id));')"
 
 echo "[verify] task_id=$TASK_ID"
 
 for _ in $(seq 1 60); do
   curl -fsS -H "X-Clawbrain-Token: $TOKEN" "$BASE_URL/api/ide/tasks/$TASK_ID" >/tmp/clawbrain_brain_task_status.json
-  STATUS="$(python3 - <<'PY'
-import json
-from pathlib import Path
-payload = json.loads(Path('/tmp/clawbrain_brain_task_status.json').read_text(encoding='utf-8'))
-print(payload.get('status',''))
-PY
-)"
+  STATUS="$(node -e 'const fs=require("node:fs");const p=JSON.parse(fs.readFileSync("/tmp/clawbrain_brain_task_status.json","utf8"));process.stdout.write(String(p.status||""));')"
   if [[ "$STATUS" == "succeeded" ]]; then
     echo "[verify] task succeeded"
     echo "BRAIN VERIFY: PASS"

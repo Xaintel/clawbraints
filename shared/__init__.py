@@ -1,2 +1,0 @@
-"""Shared modules for ClawBrain."""
-

@@ -27,4 +27,10 @@ export CLAWBRAIN_IDE_SERVER_URL="$SERVER_URL"
 export CLAWBRAIN_IDE_TOKEN="$TOKEN"
 
 cd "$ROOT_DIR"
-exec python3 -m ide_client.mcp_server "$@"
+if [[ ! -d node_modules ]]; then
+  npm install >/dev/null
+fi
+if [[ ! -f dist/ide_client/mcp_server.js ]]; then
+  npm run build >/dev/null
+fi
+exec node dist/ide_client/mcp_server.js "$@"

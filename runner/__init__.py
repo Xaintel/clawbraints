@@ -1,2 +1,0 @@
-"""ClawBrain runner package."""
-

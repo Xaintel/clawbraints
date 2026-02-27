@@ -8,8 +8,8 @@ cd "$ROOT_DIR"
 if [[ ! -d node_modules ]]; then
   npm install >/dev/null
 fi
-if [[ ! -f dist/ide_client/cli.js ]]; then
+if [[ ! -f dist/scripts/enqueue_task.js ]]; then
   npm run build >/dev/null
 fi
 
-exec node dist/ide_client/cli.js "$@"
+exec node dist/scripts/enqueue_task.js "$@"

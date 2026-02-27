@@ -66,7 +66,7 @@ Memoria historica:
 
 ### Orquestacion PM
 
-El planificador PM (`ide_client/pm_orchestrator.py`) crea flujo:
+El planificador PM (`src/ide_client/pm_orchestrator.ts`) crea flujo:
 - `CoderAgent` siempre primero.
 - `UXAgent` opcional (si se solicita o se infiere por keywords UX/UI).
 - `BuilderAgent` opcional (por defecto se incluye para validacion final).

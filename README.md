@@ -14,11 +14,9 @@ Hace 4 cosas principales:
 
 ## Lo que incluye
 
-- API FastAPI (`api/`)
-- Workers y runtime (`runner/`)
-- Politicas compartidas (`shared/`)
-- Runtime TypeScript inicial (`src/`, `package.json`, `tsconfig.json`)
-- Integracion IDE local (CLI + MCP): `ide_client/`, `scripts/clawbrain-ide`, `scripts/clawbrain-mcp-server`
+- API Fastify + runtime de agentes en TypeScript (`src/`)
+- Scripts operativos TypeScript (`src/scripts/` + wrappers `scripts/*`)
+- Integracion IDE local (CLI + MCP) TypeScript (`src/ide_client/`)
 - Migraciones SQLite (`migrations/`)
 - Compose Brain-only (`docker-compose.yml`)
 - Skills locales (`skills/`)
@@ -33,13 +31,13 @@ Hace 4 cosas principales:
 
 ## Estado de migracion a TypeScript
 
-- Ya existe un servidor TS funcional con endpoints clave:
+- Migracion completada: runtime del Brain 100% TypeScript (sin archivos Python en repo).
+- Servidor y agentes TS con endpoints clave:
   - `/health`
   - `/tasks`, `/tasks/{id}`, `/tasks/{id}/logs`
   - `/repos/{repo}/memory` (GET/PUT)
   - `/ide/*` y `/api/ide/*` (agentes, tasks, artifacts, diff)
 - Mantiene validacion de policy, auth por token, SQLite y cola Redis.
-- Python legacy sigue presente mientras se completa la migracion total.
 
 ## Quickstart TypeScript
 
@@ -74,7 +72,7 @@ sudo chmod 777 /data/clawbrain/{db,logs,memory,artifacts}
 ### 2) Instalar config base
 
 ```bash
-cd /srv/clawbrain/clawbrain-brain
+cd /srv/clawbrain/clawbraints
 ./scripts/install_config_templates.sh
 ```
 
@@ -88,7 +86,7 @@ sudo chmod 600 /data/clawbrain/secrets/api_token
 ### 4) Ejecutar migraciones
 
 ```bash
-python3 scripts/migrate.py --db-path /data/clawbrain/db/clawbrain.sqlite3
+./scripts/migrate --db-path /data/clawbrain/db/clawbrain.sqlite3
 ```
 
 ### 5) Levantar servicios
@@ -109,7 +107,7 @@ curl -fsS http://127.0.0.1:8088/health
 Para usar el Brain completamente local en tu maquina (datos en `./.local`):
 
 ```bash
-cd /srv/clawbrain/clawbrain-brain
+cd /srv/clawbrain/clawbraints
 # Si ya usas login de Codex/ChatGPT en este host, se reutiliza automaticamente (~/.codex).
 # Alternativa: export OPENAI_API_KEY="..."
 ./scripts/local_up.sh
